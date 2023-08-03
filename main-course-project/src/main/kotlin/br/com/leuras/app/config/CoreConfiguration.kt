@@ -3,7 +3,9 @@ package br.com.leuras.app.config
 import br.com.leuras.core.business.chain.ChainFilterOrchestrator
 import br.com.leuras.core.business.chain.impl.RegisterCustomerTradingOrderChainFilter
 import br.com.leuras.core.business.pipeline.Pipeline
+import br.com.leuras.core.business.pipeline.impl.CustomerOrderBrokerageFeeStep
 import br.com.leuras.core.business.pipeline.impl.CustomerOrderPreValidationStep
+import br.com.leuras.core.business.pipeline.impl.CustomerOrderRegistrationStatusStep
 import br.com.leuras.core.port.CustomerAccountRepository
 import br.com.leuras.core.port.CustomerOrderRepository
 import br.com.leuras.core.usecase.OrderManagementUseCase
@@ -24,6 +26,8 @@ class CoreConfiguration {
     fun orderDispatcherUseCase(): OrderManagementUseCase {
         val registerOrderPipeline = Pipeline()
             .addStep(CustomerOrderPreValidationStep(this.orderRepository))
+            .addStep(CustomerOrderBrokerageFeeStep())
+            .addStep(CustomerOrderRegistrationStatusStep())
 
         val rootChainFilter = ChainFilterOrchestrator.create(
             RegisterCustomerTradingOrderChainFilter(registerOrderPipeline)

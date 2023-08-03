@@ -23,7 +23,7 @@ class OrderManagementUseCase(
 
         CoroutineScope(this.coroutineContext).launch {
             val newCustomerOrder = rootChainFilter.process(customerOrder) as CustomerTradingOrder
-            orderRepository.register(newCustomerOrder)
+            orderRepository.update(newCustomerOrder)
         }
     }
 }

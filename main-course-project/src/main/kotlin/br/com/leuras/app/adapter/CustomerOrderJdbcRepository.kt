@@ -36,7 +36,7 @@ class CustomerOrderJdbcRepository(
         } ?: emptyList()
     }
 
-    override fun register(customerOrder: CustomerTradingOrder): CustomerTradingOrder {
+    override fun update(customerOrder: CustomerTradingOrder): CustomerTradingOrder {
         val newOrders = this.findOwnedBy(customerOrder.customer.customerId)
             .toMutableList()
             .also { it.add(customerOrder.orderDetail) }
