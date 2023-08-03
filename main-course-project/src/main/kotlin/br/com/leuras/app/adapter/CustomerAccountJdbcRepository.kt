@@ -27,8 +27,8 @@ class CustomerAccountJdbcRepository(
                         customerName = rs.getString("customer_name"),
                         qualifiedInvestor = rs.getBoolean("qualified_investor")
                     ),
-                    shares = this.objectMapper.readJSONList(rs.getString("shares")),
-                    orders = this.objectMapper.readJSONList(rs.getString("orders"))
+                    sharesDetails = this.objectMapper.readJSONList(rs.getString("shares")),
+                    ordersDetails = this.objectMapper.readJSONList(rs.getString("orders"))
                 )
             }).firstOrNull()
     }

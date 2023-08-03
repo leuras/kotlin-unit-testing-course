@@ -20,10 +20,26 @@ class CustomerOrderJdbcRepository(
         TODO("Not yet implemented")
     }
 
+    override fun findOwnedBy(customerId: String): List<OrderDetail> {
+        val orders = this.jdbcTemplate.query(
+            CustomerOrderSQL.SELECT,
+            PreparedStatementSetter { it.setString(1, customerId) },
+            RowMapper { rs, _ ->
+                rs.getString("orders")
+            }).firstOrNull()
+
+        return orders?.let {
+            this.objectMapper.readValue(
+                orders,
+                this.objectMapper.typeFactory.constructCollectionType(List::class.java, OrderDetail::class.java)
+            )
+        } ?: emptyList()
+    }
+
     override fun register(customerOrder: CustomerTradingOrder): CustomerTradingOrder {
-        val newOrders = this.listTradingOrdersOf(customerOrder.customer.customerId)
+        val newOrders = this.findOwnedBy(customerOrder.customer.customerId)
             .toMutableList()
-            .also { it.add(customerOrder.order) }
+            .also { it.add(customerOrder.orderDetail) }
 
         this.jdbcTemplate.update(CustomerOrderSQL.UPDATE) {
             it.setString(1, this.objectMapper.writeValueAsString(newOrders.toMap()))
@@ -39,21 +55,5 @@ class CustomerOrderJdbcRepository(
 
     override fun cancel(customerOrder: CustomerTradingOrder): CustomerTradingOrder {
         TODO("Not yet implemented")
-    }
-
-    private fun listTradingOrdersOf(customerId: String): List<OrderDetail> {
-        val orders = this.jdbcTemplate.query(
-            CustomerOrderSQL.SELECT,
-            PreparedStatementSetter { it.setString(1, customerId) },
-            RowMapper { rs, _ ->
-                rs.getString("orders")
-            }).firstOrNull()
-
-        return orders?.let {
-            this.objectMapper.readValue(
-                orders,
-                this.objectMapper.typeFactory.constructCollectionType(List::class.java, OrderDetail::class.java)
-            )
-        } ?: emptyList()
     }
 }
