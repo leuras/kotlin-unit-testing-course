@@ -6,16 +6,20 @@ import br.com.leuras.core.enums.OrderOperation
 import br.com.leuras.core.enums.OrderStatus
 import br.com.leuras.core.port.CustomerOrderRepository
 import java.time.LocalDateTime
+import org.slf4j.LoggerFactory
 
 class CustomerOrderPreValidationStep(
-    private val orderRepository: CustomerOrderRepository) : PipelineStep {
+    private val repository: CustomerOrderRepository) : PipelineStep {
 
     companion object {
         private const val SHARES_BLOCK_SIZE = 100
+        private val log = LoggerFactory.getLogger(CustomerOrderPreValidationStep::class.java)
     }
 
     override fun execute(input: Any): Any {
         val customerOrder = input as CustomerTradingOrder
+
+        log.info("Running pre-validation rules for order n°: ${customerOrder.orderDetail.orderId}")
 
         return customerOrder.takeIf { it.orderDetail.status == OrderStatus.PENDING }
             ?.takeIf { it.orderDetail.tickerSymbol.trim().isNotBlank() }
@@ -40,7 +44,7 @@ class CustomerOrderPreValidationStep(
     }
 
     private fun isUnique(newOrder: CustomerTradingOrder): Boolean {
-        return this.orderRepository.findOwnedBy(newOrder.customer.customerId)
+        return this.repository.findOwnedBy(newOrder.customer.customerId)
             .none { otherOrder ->
                 otherOrder.createdAt.toLocalDate() == newOrder.orderDetail.createdAt.toLocalDate()
                     && otherOrder.tickerSymbol == newOrder.orderDetail.tickerSymbol

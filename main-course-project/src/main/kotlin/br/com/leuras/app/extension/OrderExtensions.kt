@@ -1,20 +1,26 @@
 package br.com.leuras.app.extension
 
 import br.com.leuras.app.model.OrderConfirmationResponse
+import br.com.leuras.core.entity.CustomerTradingOrder
 import br.com.leuras.core.entity.OrderDetail
 import br.com.leuras.core.entity.TradingOrder
 
-fun TradingOrder.toConfirmationResponse() = OrderConfirmationResponse(
-    orderId = this.order.orderId,
-    stock = this.order.tickerSymbol,
-    operation = this.order.operation,
-    quantity = this.order.quantity,
-    unitPrice = this.order.unitPrice,
-    amount = this.order.quantity * this.order.unitPrice,
-    status = this.order.status,
-    createdAt = this.order.createdAt,
-    updatedAt = this.order.updatedAt
+fun TradingOrder.toConfirmationResponse() = this.order.toConfirmationResponse()
+
+fun CustomerTradingOrder.toConfirmationResponse() = this.orderDetail.toConfirmationResponse()
+
+fun OrderDetail.toConfirmationResponse() = OrderConfirmationResponse(
+    orderId = this.orderId,
+    stock = this.tickerSymbol,
+    operation = this.operation,
+    quantity = this.quantity,
+    unitPrice = this.unitPrice,
+    amount = this.quantity * this.unitPrice,
+    status = this.status,
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt
 )
+
 fun List<OrderDetail>.toMap() = this.map {
     mapOf(
         "orderId" to it.orderId,

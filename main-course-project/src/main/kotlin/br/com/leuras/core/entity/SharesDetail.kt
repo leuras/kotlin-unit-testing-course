@@ -9,10 +9,10 @@ data class SharesDetail(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()) {
 
-    operator fun plus(order: OrderDetail): SharesDetail {
+    operator fun plus(other: SharesDetail): SharesDetail {
         val balance = this.shares * this.averagePrice
-        val bought = order.quantity * order.unitPrice
-        val quantity = this.shares + order.quantity
+        val bought = other.shares * other.averagePrice
+        val quantity = this.shares + other.shares
 
         val newBalance = balance + bought
         val averagePrice = (newBalance) / quantity
