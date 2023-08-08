@@ -18,7 +18,7 @@ data class OrderRequest(
 
     fun toTradingOrder() = TradingOrder(
         customerId = this.customerId,
-        order = OrderDetail(
+        orderDetail = OrderDetail(
             tickerSymbol = this.tickerSymbol,
             operation = this.operation,
             quantity = this.quantity,

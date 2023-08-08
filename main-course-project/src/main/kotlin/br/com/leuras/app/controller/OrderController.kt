@@ -5,7 +5,6 @@ import br.com.leuras.app.model.OrderRequest
 import br.com.leuras.core.exception.CustomerAccountNotFoundException
 import br.com.leuras.core.exception.CustomerOrderNotFoundException
 import br.com.leuras.core.usecase.OrderManagementUseCase
-import jakarta.websocket.server.PathParam
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,7 +20,7 @@ class OrderController(
     private val useCase: OrderManagementUseCase) {
 
     companion object {
-        private const val UNKNOWN_ERROR = "Failed to process the request due to an unknown error. Please try again later."
+        private const val GENERIC_ERROR = "Failed to process the request due to: "
     }
 
     @PostMapping
@@ -34,7 +33,7 @@ class OrderController(
         } catch (t: Throwable) {
             val message = when(t) {
                 is CustomerAccountNotFoundException -> t.message
-                else -> UNKNOWN_ERROR
+                else -> "$GENERIC_ERROR ${t.message}"
             }
 
             return ResponseEntity(mapOf("message" to message), HttpStatus.BAD_REQUEST)
@@ -49,7 +48,7 @@ class OrderController(
         } catch (t: Throwable) {
             val message = when(t) {
                 is CustomerOrderNotFoundException -> t.message
-                else -> UNKNOWN_ERROR
+                else -> "$GENERIC_ERROR ${t.message}"
             }
 
             return ResponseEntity(mapOf("message" to message), HttpStatus.NOT_FOUND)

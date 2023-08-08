@@ -3,8 +3,8 @@ package br.com.leuras.core.usecase
 import br.com.leuras.core.business.chain.ChainFilter
 import br.com.leuras.core.entity.CustomerTradingOrder
 import br.com.leuras.core.entity.TradingOrder
-import br.com.leuras.core.enums.OrderStatus
 import br.com.leuras.core.enums.OrderAction
+import br.com.leuras.core.enums.OrderStatus
 import br.com.leuras.core.enums.toArgs
 import br.com.leuras.core.exception.CustomerAccountNotFoundException
 import br.com.leuras.core.exception.CustomerOrderNotFoundException
@@ -22,29 +22,29 @@ class OrderManagementUseCase(
     private val coroutineContext: CoroutineDispatcher = Dispatchers.IO) {
 
     fun register(tradingOrder: TradingOrder) {
-        val customerOrder = this.accountRepository.find(tradingOrder.customerId)
+        val order = this.accountRepository.find(tradingOrder.customerId)
             ?.plus(tradingOrder) ?: throw CustomerAccountNotFoundException()
 
         CoroutineScope(this.coroutineContext).launch {
-            val newCustomerOrder = rootChainFilter.process(
-                    input = customerOrder,
-                    args  = OrderAction.REGISTRATION.toArgs()
-                ) as CustomerTradingOrder
+            val newOrder = rootChainFilter.process(
+                input = order,
+                args  = OrderAction.REGISTRATION.toArgs()
+            ) as CustomerTradingOrder
 
-            orderRepository.update(newCustomerOrder)
+            orderRepository.update(newOrder)
         }
     }
 
     fun execute(orderId: String): CustomerTradingOrder {
-        val customerOrder = this.orderRepository.find(orderId)
+        val order = this.orderRepository.find(orderId)
             ?.takeIf { it.orderDetail.status == OrderStatus.REGISTERED }
                 ?: throw CustomerOrderNotFoundException()
 
-        val newCustomerOrder = this.rootChainFilter.process(
-            input = customerOrder,
+        val newOrder = this.rootChainFilter.process(
+            input = order,
             args  = OrderAction.EXECUTION.toArgs()
         ) as CustomerTradingOrder
 
-        return this.orderRepository.update(newCustomerOrder)
+        return this.orderRepository.update(newOrder)
     }
 }

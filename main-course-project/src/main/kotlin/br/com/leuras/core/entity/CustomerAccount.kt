@@ -16,7 +16,7 @@ data class CustomerAccount(
 
     operator fun plus(tradingOrder: TradingOrder) = CustomerTradingOrder(
         customer = this.customer,
-        sharesDetail = this.sharesDetails.firstOrNull { it.tickerSymbol == tradingOrder.order.tickerSymbol },
-        orderDetail = tradingOrder.order
+        sharesDetail = this.sharesDetails.firstOrNull { it.tickerSymbol == tradingOrder.orderDetail.tickerSymbol },
+        orderDetail = tradingOrder.orderDetail
     )
 }

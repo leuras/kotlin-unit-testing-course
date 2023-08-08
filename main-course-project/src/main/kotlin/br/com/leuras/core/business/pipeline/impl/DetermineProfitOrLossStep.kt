@@ -8,12 +8,13 @@ import br.com.leuras.core.port.CustomerAccountRepository
 import java.time.LocalDateTime
 import kotlin.math.abs
 
-class ProfitOrLossPipelineStep(
-    private val accountRepository: CustomerAccountRepository): PipelineStep {
+class DetermineProfitOrLossStep(
+    private val repository: CustomerAccountRepository): PipelineStep {
 
     override fun execute(input: Any): Any {
         val order = input as CustomerTradingOrder
-        val customerAccount = this.accountRepository.find(order.customer.customerId)
+
+        val customerAccount = this.repository.find(order.customer.customerId)
             ?: throw CustomerAccountNotFoundException()
 
         val grossAmount = this.calculateGrossAmount(order)
@@ -28,7 +29,7 @@ class ProfitOrLossPipelineStep(
             accumulatedLosses = customerAccount.losses
         )
 
-        this.accountRepository.update(
+        this.repository.update(
             customerAccount.copy(
                 losses = netLoss,
                 updatedAt = LocalDateTime.now()
@@ -60,7 +61,7 @@ class ProfitOrLossPipelineStep(
     private fun accumulateLoss(customerAccount: CustomerAccount, loss: Double) {
         val newBalance = customerAccount.losses + loss
 
-        this.accountRepository.update(
+        this.repository.update(
             customerAccount.copy(
                 losses = newBalance,
                 updatedAt = LocalDateTime.now()

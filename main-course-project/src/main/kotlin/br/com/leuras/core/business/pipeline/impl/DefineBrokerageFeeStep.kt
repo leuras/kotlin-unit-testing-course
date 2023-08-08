@@ -4,26 +4,19 @@ import br.com.leuras.core.business.pipeline.PipelineStep
 import br.com.leuras.core.entity.CustomerTradingOrder
 import br.com.leuras.core.enums.BrokerageFee
 import java.time.LocalDateTime
-import org.slf4j.LoggerFactory
 
-class CustomerOrderBrokerageFeeStep: PipelineStep {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(CustomerOrderBrokerageFeeStep::class.java)
-    }
+class DefineBrokerageFeeStep: PipelineStep {
 
     override fun execute(input: Any): Any {
-        val customerOrder = input as CustomerTradingOrder
+        val order = input as CustomerTradingOrder
 
-        log.info("Applying customer's order brokerage fee for order n°: ${customerOrder.orderDetail.orderId}")
-
-        val newOrder = with(customerOrder) {
+        val newOrder = with(order) {
             orderDetail.copy(
                 brokerageFee = if (customer.qualifiedInvestor) BrokerageFee.FREE.fee else BrokerageFee.REGULAR.fee,
                 updatedAt = LocalDateTime.now()
             )
         }
 
-        return customerOrder.copy(orderDetail = newOrder)
+        return order.copy(orderDetail = newOrder)
     }
 }

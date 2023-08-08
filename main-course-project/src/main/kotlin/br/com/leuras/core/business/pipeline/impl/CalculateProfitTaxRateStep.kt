@@ -3,7 +3,7 @@ package br.com.leuras.core.business.pipeline.impl
 import br.com.leuras.core.business.pipeline.PipelineStep
 import br.com.leuras.core.entity.CustomerTradingOrder
 
-class ProfitTaxPipelineStep: PipelineStep {
+class CalculateProfitTaxRateStep: PipelineStep {
 
     companion object {
         private const val TAX_RATE = 0.20

@@ -5,7 +5,7 @@ import br.com.leuras.core.entity.CustomerTradingOrder
 import br.com.leuras.core.entity.OrderDetail
 import br.com.leuras.core.entity.TradingOrder
 
-fun TradingOrder.toConfirmationResponse() = this.order.toConfirmationResponse()
+fun TradingOrder.toConfirmationResponse() = this.orderDetail.toConfirmationResponse()
 
 fun CustomerTradingOrder.toConfirmationResponse() = this.orderDetail.toConfirmationResponse()
 

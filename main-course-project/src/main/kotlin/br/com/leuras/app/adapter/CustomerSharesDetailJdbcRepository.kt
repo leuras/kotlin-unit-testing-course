@@ -1,5 +1,6 @@
 package br.com.leuras.app.adapter
 
+import br.com.leuras.app.extension.readJSONList
 import br.com.leuras.app.extension.toMap
 import br.com.leuras.app.infrastructure.sql.CustomerSharesDetailSQL
 import br.com.leuras.core.entity.SharesDetail
@@ -28,18 +29,12 @@ class CustomerSharesDetailJdbcRepository(
     }
 
     private fun listSharesOf(customerId: String): List<SharesDetail> {
-        val orders = this.jdbcTemplate.query(
+        return this.jdbcTemplate.query(
             CustomerSharesDetailSQL.SELECT,
             PreparedStatementSetter { it.setString(1, customerId) },
             RowMapper { rs, _ ->
                 rs.getString("shares")
-            }).firstOrNull()
-
-        return orders?.let {
-            this.objectMapper.readValue(
-                orders,
-                this.objectMapper.typeFactory.constructCollectionType(List::class.java, SharesDetail::class.java)
-            )
-        } ?: emptyList()
+                this.objectMapper.readJSONList<SharesDetail>(rs.getString("shares"))
+            }).flatten()
     }
 }

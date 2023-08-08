@@ -11,7 +11,8 @@ class ExecuteBuyTradingOrderChainFilter(pipeline: Pipeline):
     override fun process(input: CustomerTradingOrder, args: Map<String, Any>): CustomerTradingOrder? {
         val action = args[OrderAction.KEY] as OrderAction?
 
-        if (OrderAction.EXECUTION == action && input.orderDetail.operation == OrderOperation.BUY) {
+        if (OrderAction.EXECUTION == action
+                && input.orderDetail.operation == OrderOperation.BUY) {
             return this.pipeline.run(input) as CustomerTradingOrder?
         }
 

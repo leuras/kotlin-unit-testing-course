@@ -6,30 +6,26 @@ import br.com.leuras.core.enums.OrderOperation
 import br.com.leuras.core.enums.OrderStatus
 import br.com.leuras.core.port.CustomerOrderRepository
 import java.time.LocalDateTime
-import org.slf4j.LoggerFactory
 
-class CustomerOrderPreValidationStep(
+class PreValidateCustomerOrderStep(
     private val repository: CustomerOrderRepository) : PipelineStep {
 
     companion object {
         private const val SHARES_BLOCK_SIZE = 100
-        private val log = LoggerFactory.getLogger(CustomerOrderPreValidationStep::class.java)
     }
 
     override fun execute(input: Any): Any {
-        val customerOrder = input as CustomerTradingOrder
+        val order = input as CustomerTradingOrder
 
-        log.info("Running pre-validation rules for order n°: ${customerOrder.orderDetail.orderId}")
-
-        return customerOrder.takeIf { it.orderDetail.status == OrderStatus.PENDING }
+        return order.takeIf { it.orderDetail.status == OrderStatus.PENDING }
             ?.takeIf { it.orderDetail.tickerSymbol.trim().isNotBlank() }
             ?.takeIf { it.orderDetail.quantity >= SHARES_BLOCK_SIZE }
             ?.takeIf { (it.orderDetail.quantity % SHARES_BLOCK_SIZE) == 0 }
             ?.takeIf { it.orderDetail.unitPrice > 0.0 }
-            ?.takeIf { this.hasEnoughShares(customerOrder) }
-            ?.takeIf { this.isUnique(customerOrder) }
-                ?: customerOrder.copy(
-                    orderDetail = customerOrder.orderDetail.copy(
+            ?.takeIf { this.hasEnoughShares(order) }
+            ?.takeIf { this.isUnique(order) }
+                ?: order.copy(
+                    orderDetail = order.orderDetail.copy(
                         status = OrderStatus.REJECTED,
                         updatedAt = LocalDateTime.now()
                     )
