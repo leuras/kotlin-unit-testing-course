@@ -17,6 +17,7 @@ class CustomerSharesDetailJdbcRepository(
 
     override fun update(customerId: String, shares: SharesDetail) {
         val newShares = this.listSharesOf(customerId)
+            .filter { it.tickerSymbol != shares.tickerSymbol }
             .toMutableList()
             .also { it.add(shares) }
 

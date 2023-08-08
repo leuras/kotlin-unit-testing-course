@@ -1,11 +1,14 @@
 package br.com.leuras.core.entity
 
+import java.time.LocalDateTime
+
 data class CustomerAccount(
     val customer: Customer,
     val sharesDetails: List<SharesDetail>,
     val ordersDetails: List<OrderDetail>,
-    val profit: Double = 0.0,
-    val prejudiceBalance: Double = 0.0) {
+    val losses: Double = 0.0,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now()) {
 
     val balance: Double
         get() = this.sharesDetails.map { it.shares * it.averagePrice }

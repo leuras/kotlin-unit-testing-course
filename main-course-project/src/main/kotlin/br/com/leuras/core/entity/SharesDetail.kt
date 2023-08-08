@@ -23,4 +23,13 @@ data class SharesDetail(
             updatedAt = LocalDateTime.now()
         )
     }
+
+    operator fun minus(other: SharesDetail): SharesDetail {
+        val quantity = this.shares - other.shares
+
+        return this.copy(
+            shares = quantity,
+            updatedAt = LocalDateTime.now()
+        )
+    }
 }

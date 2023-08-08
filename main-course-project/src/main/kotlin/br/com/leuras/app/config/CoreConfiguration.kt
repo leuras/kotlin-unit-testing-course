@@ -8,7 +8,10 @@ import br.com.leuras.core.business.pipeline.Pipeline
 import br.com.leuras.core.business.pipeline.impl.CustomerOrderBrokerageFeeStep
 import br.com.leuras.core.business.pipeline.impl.CustomerOrderPreValidationStep
 import br.com.leuras.core.business.pipeline.impl.CustomerOrderRegistrationStatusStep
+import br.com.leuras.core.business.pipeline.impl.DecreaseCustomerSharesPipelineStep
 import br.com.leuras.core.business.pipeline.impl.IncreaseCustomerSharesPipelineStep
+import br.com.leuras.core.business.pipeline.impl.ProfitOrLossPipelineStep
+import br.com.leuras.core.business.pipeline.impl.ProfitTaxPipelineStep
 import br.com.leuras.core.port.CustomerAccountRepository
 import br.com.leuras.core.port.CustomerOrderRepository
 import br.com.leuras.core.port.CustomerSharesDetailRepository
@@ -49,6 +52,9 @@ class CoreConfiguration {
             ),
             ExecuteSellTradingOrderChainFilter(
                 pipeline = Pipeline()
+                    .addStep(ProfitOrLossPipelineStep(this.accountRepository))
+                    .addStep(ProfitTaxPipelineStep())
+                    .addStep(DecreaseCustomerSharesPipelineStep(this.sharesRepository))
             )
         )
 }
