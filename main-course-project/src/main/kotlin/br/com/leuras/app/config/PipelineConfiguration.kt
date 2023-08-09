@@ -28,7 +28,7 @@ class PipelineConfiguration {
     private lateinit var sharesRepository: CustomerSharesDetailRepository
 
     @Bean
-    fun registerCustomerTradingPipeline() = Pipeline()
+    fun registerTradingOrderPipeline() = Pipeline()
         .addStep(PreValidateCustomerOrderStep(this.orderRepository))
         .addStep(DefineBrokerageFeeStep())
         .addStep(CompleteCustomerOrderRegistrationStep())

@@ -22,7 +22,7 @@ class UseCaseConfiguration {
     private lateinit var accountRepository: CustomerAccountRepository
 
     @Autowired
-    private lateinit var registerCustomerTradingPipeline: Pipeline
+    private lateinit var registerTradingOrderPipeline: Pipeline
 
     @Autowired
     private lateinit var executeBuyTradingOrderPipeline: Pipeline
@@ -34,12 +34,12 @@ class UseCaseConfiguration {
     fun orderManagementUseCase() = OrderManagementUseCase(
             this.orderRepository,
             this.accountRepository,
-            this.buildRootChainFilter()
+            this.buildChainFilter()
     )
 
-    private fun buildRootChainFilter() = ChainFilterOrchestrator.create(
+    private fun buildChainFilter() = ChainFilterOrchestrator.create(
             root = RegisterCustomerTradingOrderChainFilter(
-                pipeline = this.registerCustomerTradingPipeline
+                pipeline = this.registerTradingOrderPipeline
             ),
             ExecuteBuyTradingOrderChainFilter(
                 pipeline = this.executeBuyTradingOrderPipeline

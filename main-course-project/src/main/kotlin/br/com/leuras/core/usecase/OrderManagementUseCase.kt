@@ -10,6 +10,7 @@ import br.com.leuras.core.exception.CustomerAccountNotFoundException
 import br.com.leuras.core.exception.CustomerOrderNotFoundException
 import br.com.leuras.core.port.CustomerAccountRepository
 import br.com.leuras.core.port.CustomerOrderRepository
+import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,5 +47,21 @@ class OrderManagementUseCase(
         ) as CustomerTradingOrder
 
         return this.orderRepository.update(newOrder)
+    }
+
+    fun cancel(customerId: String, orderId: String): CustomerTradingOrder {
+        val order = this.orderRepository.find(orderId)
+            ?.takeIf { it.customer.customerId == customerId }
+            ?.takeIf { it.orderDetail.status in listOf(OrderStatus.PENDING, OrderStatus.REGISTERED) }
+                ?: throw CustomerOrderNotFoundException()
+
+        return this.orderRepository.update(
+            order.copy(
+                orderDetail = order.orderDetail.copy(
+                    status = OrderStatus.CANCELED,
+                    updatedAt = LocalDateTime.now()
+                )
+            )
+        )
     }
 }
