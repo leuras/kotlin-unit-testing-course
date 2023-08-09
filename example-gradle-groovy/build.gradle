@@ -1,0 +1,25 @@
+plugins {
+	id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
+}
+
+group = 'br.com.leuras'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+	// test
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
