@@ -59,7 +59,7 @@ class OrderController(
     fun cancel(@PathVariable("id") orderId: String, @PathVariable("customer_id") customerId: String): ResponseEntity<Any> {
         return try {
             val order = this.useCase.cancel(customerId, orderId)
-            ResponseEntity(order, HttpStatus.OK)
+            ResponseEntity(order.toConfirmationResponse(), HttpStatus.OK)
         } catch (t: Throwable) {
             val message = when(t) {
                 is CustomerOrderNotFoundException -> t.message
