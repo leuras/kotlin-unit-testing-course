@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "3.1.2"
+	id("org.springframework.boot") version "2.7.18"
 	id("io.spring.dependency-management") version "1.1.2"
 	kotlin("jvm") version "1.8.22"
 	kotlin("plugin.spring") version "1.8.22"
@@ -11,7 +11,7 @@ group = "br.com.leuras"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -32,18 +32,18 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	// database
-	implementation("org.flywaydb:flyway-core")
-	runtimeOnly("org.postgresql:postgresql")
+	// implementation("org.flywaydb:flyway-core")
+	// runtimeOnly("org.postgresql:postgresql")
 
 	// test
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.kafka:spring-kafka-test")
+	 testImplementation("org.springframework.boot:spring-boot-starter-test")
+	 testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = "17"
+		jvmTarget = "11"
 	}
 }
 
